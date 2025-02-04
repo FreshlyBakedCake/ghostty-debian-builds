@@ -6,55 +6,12 @@ on:
     - main
 
 jobs:
-  build:
-    name: "Build Ghostty for Ubuntu 24.04 LTS"
-    runs-on: ubuntu-24.04
-    permissions: write-all
-
-    steps:
-      - name: "Checkout latest codebase"
-        uses: actions/checkout@v3
-
-      # Refer : https://ghostty.org/docs/install/build
-      - name: "Install Depenencies"
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk-4-dev libadwaita-1-dev
-
-      # Refer : https://github.com/marketplace/actions/setup-zig-compiler
-      - name: "Setup Zip"
-        uses: mlugg/setup-zig@v1
-        with:
-          version: 0.13.0
-
-      - name: "Clone Ghostty repo"
-        uses: GuillaumeFalourd/clone-github-repo-action@v2.3
-        with:
-          depth: 1
-          branch: 'v1.0.1'
-          owner: 'ghostty-org'
-          repository: 'ghostty'
-          
-      - name: "Build Ghostty binary"
-        run: cd ghostty && zig build -Doptimize=ReleaseFast && mv zig-out ghostty && tar -jcf ghostty-ubuntu-24.04-amd64.tar.bz2 ghostty
-
-      - name: "List files"
-        run: ls -liFh
-
-      - name: "Create a release"
-        uses: softprops/action-gh-release@v2
-        with:
-          name: ${{ github.run.id }}
-          tag_name: ${{ github.ref_name }}
-          files: ghostty/ghostty-ubuntu-24.04-amd64.tar.bz2
-
-
   debian:
-    name: "Build Ghostty for Debian 12 Bookworm"
+    name: "Build Ghostty for Debian Sid (Unstable)"
     runs-on: ubuntu-24.04
     permissions: write-all
     # Refer : https://stackoverflow.com/questions/64033686/how-can-i-use-private-docker-image-in-github-actions
-    container: debian:12.8
+    container: debian:sid
     
     steps:
       - name: "Checkout latest codebase"
@@ -81,7 +38,7 @@ jobs:
           repository: 'ghostty'
 
       - name: "Build Ghostty binary"
-        run: cd ghostty && zig build -Doptimize=ReleaseFast && mv zig-out ghostty && tar -jcf ghostty-debian-12-amd64.tar.bz2 ghostty
+        run: cd ghostty && zig build -Doptimize=ReleaseFast && mv zig-out ghostty && tar -jcf ghostty-debian-sid-amd64.tar.bz2 ghostty
 
       - name: "List files"
         run: ls -liFh
@@ -91,4 +48,4 @@ jobs:
         with:
           name: ${{ github.run.id }}
           tag_name: ${{ github.ref_name }}
-          files: ghostty/ghostty-debian-12-amd64.tar.bz2
+          files: ghostty/ghostty-debian-sid-amd64.tar.bz2
