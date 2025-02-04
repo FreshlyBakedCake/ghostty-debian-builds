@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions: write-all
     # Refer : https://stackoverflow.com/questions/64033686/how-can-i-use-private-docker-image-in-github-actions
-    container: debian:sid
+    container: ghcr.io/vanilla-os/desktop:main
     
     steps:
       - name: "Checkout latest codebase"
